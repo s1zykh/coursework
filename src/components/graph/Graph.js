@@ -18,30 +18,30 @@ const Graph = () => {
 
   const onAddVertex = (e) => {
     if (activeBtn) {
-      const alp = charac[vertexes.length];
+      const nameVertex = charac[Object.keys(vertexes).length];
       const rect = graphRef.current.getBoundingClientRect();
       const coorX = e.clientX - rect.left - 17;
       const coorY = e.clientY - rect.top - 15;
-      const newVertex = {
-        name: alp,
+      const dataVertex = {
+        name: nameVertex,
         coorX,
         coorY,
+        edges: [],
       };
-      dispacth(addVertexes(newVertex));
+      dispacth(addVertexes(nameVertex, dataVertex));
     }
   };
 
   return (
     <div className="frame" onClick={(e) => onAddVertex(e)} ref={graphRef}>
-      {vertexes.map((vertex, index) => (
+      {Object.keys(vertexes).map((nameVertex, index) => (
         <Vertex
           key={index}
-          name={vertex.name}
-          coorX={vertex.coorX}
-          coorY={vertex.coorY}
+          name={vertexes[nameVertex].name}
+          coorX={vertexes[nameVertex].coorX}
+          coorY={vertexes[nameVertex].coorY}
         />
       ))}
-
       <Edge x1={174} y1={386} x2={618} y2={339} />
       <Edge x1={618} y1={339} x2={673} y2={461} />
       <Edge x1={174} y1={386} x2={673} y2={461} />

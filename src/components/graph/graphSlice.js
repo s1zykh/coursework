@@ -29,17 +29,29 @@ const initialState = {
     "Y",
     "Z",
   ],
-  vertexes: [],
+  vertexes: {},
   edges: [],
   activeEdge: null,
+  twoVertexes: [],
 };
 
 const graphSlice = createSlice({
   name: "graph",
   initialState,
   reducers: {
-    addVertexes: (state, action) => {
-      state.vertexes.push(action.payload);
+    addVertexes: {
+      reducer: (state, action) => {
+        const { nameVertex, dataVertex } = action.payload;
+        state.vertexes[nameVertex] = dataVertex;
+      },
+      prepare: (nameVertex, dataVertex) => {
+        return {
+          payload: {
+            nameVertex,
+            dataVertex,
+          },
+        };
+      },
     },
     addEdges: (state, action) => {
       state.edges.push(action.payload);
@@ -47,9 +59,14 @@ const graphSlice = createSlice({
     addActiveEdge: (state, action) => {
       state.activeEdge = action.payload;
     },
+    addTwoVertexes: (state, action) => {
+      if (state.twoVertexes.length !== 2) {
+        state.twoVertexes.push(action.payload);
+      }
+    },
   },
 });
 
 const { reducer, actions } = graphSlice;
-export const { addVertexes, addEdges, addActiveEdge } = actions;
+export const { addVertexes, addEdges, addActiveEdge, addTwoVertexes } = actions;
 export default reducer;

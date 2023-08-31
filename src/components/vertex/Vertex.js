@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { addActiveEdge } from "../graph/graphSlice";
+import { addActiveEdge, addTwoVertexes } from "../graph/graphSlice";
 import { useDispatch } from "react-redux";
 import "./vertex.scss";
 
@@ -12,7 +12,10 @@ const Vertex = ({ name, coorX, coorY }) => {
   return (
     <div
       className={activeСonnectionVertices}
-      onClick={() => dispatch(addActiveEdge({ name, coorX, coorY }))}
+      onClick={() => {
+        dispatch(addActiveEdge({ name, coorX, coorY }));
+        dispatch(addTwoVertexes(name));
+      }}
       style={{
         left: coorX,
         top: coorY,
