@@ -1,0 +1,21 @@
+.panel {
+  margin-top: 10px;
+}
+.buttons {
+  display: flex;
+  width: 500px;
+  justify-content: space-between;
+  &__btn {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border: 2px solid rgb(187, 185, 185);
+    border-radius: 5px;
+    font-weight: 500;
+    &-active {
+      background-color: rgb(187, 185, 185);
+    }
+  }
+}
