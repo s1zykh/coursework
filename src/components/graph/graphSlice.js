@@ -30,9 +30,9 @@ const initialState = {
     "Z",
   ],
   vertexes: {},
-  edges: [],
   activeEdge: null,
   twoVertexes: [],
+  pathData: {},
 };
 
 const graphSlice = createSlice({
@@ -53,6 +53,20 @@ const graphSlice = createSlice({
         };
       },
     },
+    updateVertex: {
+      reducer: (state, action) => {
+        const { edge, nameVertex } = action.payload;
+        state.vertexes[nameVertex].edges.push(edge);
+      },
+      prepare: (edge, nameVertex) => {
+        return {
+          payload: {
+            edge,
+            nameVertex,
+          },
+        };
+      },
+    },
     addEdges: (state, action) => {
       state.edges.push(action.payload);
     },
@@ -60,13 +74,36 @@ const graphSlice = createSlice({
       state.activeEdge = action.payload;
     },
     addTwoVertexes: (state, action) => {
-      if (state.twoVertexes.length !== 2) {
+      if (
+        state.twoVertexes.length !== 2 &&
+        !state.twoVertexes.some((vertex) => vertex.name === action.payload.name)
+      ) {
         state.twoVertexes.push(action.payload);
       }
+    },
+    twoVertexesClear: (state) => {
+      state.twoVertexes = [];
+    },
+    clearDataGraph: (state) => {
+      state.vertexes = {};
+      state.activeEdge = null;
+      state.twoVertexes = [];
+    },
+    addPathData: (state, action) => {
+      state.pathData = action.payload;
     },
   },
 });
 
 const { reducer, actions } = graphSlice;
-export const { addVertexes, addEdges, addActiveEdge, addTwoVertexes } = actions;
+export const {
+  addVertexes,
+  addEdges,
+  addActiveEdge,
+  addTwoVertexes,
+  updateVertex,
+  twoVertexesClear,
+  clearDataGraph,
+  addPathData,
+} = actions;
 export default reducer;

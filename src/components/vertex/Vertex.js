@@ -14,7 +14,7 @@ const Vertex = ({ name, coorX, coorY }) => {
       className={activeСonnectionVertices}
       onClick={() => {
         dispatch(addActiveEdge({ name, coorX, coorY }));
-        dispatch(addTwoVertexes(name));
+        dispatch(addTwoVertexes({ name, coorX, coorY }));
       }}
       style={{
         left: coorX,

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addVertexes } from "./graphSlice";
 import Vertex from "../vertex/Vertex";
@@ -42,9 +42,17 @@ const Graph = () => {
           coorY={vertexes[nameVertex].coorY}
         />
       ))}
-      <Edge x1={174} y1={386} x2={618} y2={339} />
-      <Edge x1={618} y1={339} x2={673} y2={461} />
-      <Edge x1={174} y1={386} x2={673} y2={461} />
+      {Object.keys(vertexes).map((nameVertex, index) =>
+        vertexes[nameVertex].edges.map((item, i) => (
+          <Edge
+            key={`${index}-${i}`}
+            x1={vertexes[nameVertex].coorX}
+            y1={vertexes[nameVertex].coorY}
+            x2={item.coorX}
+            y2={item.coorY}
+          />
+        ))
+      )}
     </div>
   );
 };
