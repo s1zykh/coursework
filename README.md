@@ -131,8 +131,7 @@
 ## Технологии
 
 - **React**
-- **json-server**
-- **RTK**
+- **redux**
 
 ## Версия Node.js
 
