@@ -1,70 +1,155 @@
-# Getting Started with Create React App
+## Описание проекта
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Курсовая работа на тему "Нахождение оптимального пути в графе с несколькими параметрами".
+Целью проекта было определение оптимальных маршрутов между двумя вершинами графа. В реализации использованы два алгоритма: улучшенный алгоритм Дейкстры для поиска с учётом расстояния и качества, а также алгоритм Парето-оптимальности.
 
-## Available Scripts
+### Алгоритмы
 
-In the project directory, you can run:
+1. **Улучшенный алгоритм Дейкстры**
 
-### `npm start`
+   ```js
+   dijkstra(graph, start, end) {
+   const distances = {};
+   const qualities = {};
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+   for (let vertex in graph) {
+       distances[vertex] = Infinity;
+       qualities[vertex] = Infinity;
+   }
+   distances[start] = 0;
+   qualities[start] = 0;
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+   const previousVertices = {};
+   const visited = {};
 
-### `npm test`
+   function findClosestVertex() {
+       let closestVertex = null;
+       for (let vertex in distances) {
+       if (
+           !visited[vertex] &&
+           (closestVertex === null ||
+           calculateWeight(vertex) < calculateWeight(closestVertex))
+       ) {
+           closestVertex = vertex;
+       }
+       }
+       return closestVertex;
+   }
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   function calculateWeight(vertex) {
+       return 0.4 * distances[vertex] + 0.6 * qualities[vertex];
+   }
 
-### `npm run build`
+   while (true) {
+       const closestVertex = findClosestVertex();
+       if (closestVertex === null) {
+       break;
+       }
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+       visited[closestVertex] = true;
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+       for (let edge of graph[closestVertex].edges) {
+       const neighborVertex = edge.vertex;
+       const edgeDistance = edge.distance;
+       const edgeQuality = edge.quality;
+       const totalDistance = distances[closestVertex] + edgeDistance;
+       const totalQuality = qualities[closestVertex] + edgeQuality;
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+       if (totalDistance < distances[neighborVertex]) {
+           distances[neighborVertex] = totalDistance;
+           qualities[neighborVertex] = totalQuality;
+           previousVertices[neighborVertex] = closestVertex;
+       }
+       }
+   }
 
-### `npm run eject`
+   const shortestPath = [];
+   let currentVertex = end;
+   while (currentVertex !== start) {
+       shortestPath.unshift(currentVertex);
+       currentVertex = previousVertices[currentVertex];
+   }
+   shortestPath.unshift(start);
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   return shortestPath;
+   }
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **Алгоритм Парето оптимальности**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+   ```js
+     paretoOptimalSolutions(graph, start, end, priority = "default") {
+   const allPaths = this.allPaths(graph, start, end);
+   console.log("allPaths", allPaths);
+   let paretoOptimal = [];
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   if (allPaths.length === 0) {
+     return [];
+   }
 
-## Learn More
+   function compare(a, b) {
+     if (priority === "quality") {
+       return b.quality - a.quality || a.distance - b.distance;
+     } else if (priority === "distance") {
+       return a.distance - b.distance || b.quality - a.quality;
+     }
+   }
+   if (priority !== "default") {
+     allPaths.sort(compare);
+   }
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   const n = priority !== "default" ? paretoOptimal.length : allPaths.length;
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   for (let i = 0; i < allPaths.length; i++) {
+     let isParetoOptimal = true;
+     for (let j = 0; j < n; j++) {
+       if (
+         (priority === "quality" &&
+           allPaths[i].distance <= paretoOptimal[j].distance &&
+           allPaths[i].quality > paretoOptimal[j].quality) ||
+         (priority === "distance" &&
+           allPaths[i].quality >= paretoOptimal[j].quality &&
+           allPaths[i].distance < paretoOptimal[j].distance) ||
+         (priority === "default" &&
+           i !== j &&
+           allPaths[i].distance >= allPaths[j].distance &&
+           allPaths[i].quality <= allPaths[j].quality)
+       ) {
+         isParetoOptimal = false;
+         break;
+       }
+     }
 
-### Code Splitting
+     if (isParetoOptimal) {
+       paretoOptimal.push(allPaths[i]);
+     }
+   }
+   return paretoOptimal;
+   }
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Технологии
 
-### Analyzing the Bundle Size
+- **React**
+- **json-server**
+- **RTK**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Версия Node.js
 
-### Making a Progressive Web App
+Проект использует Node.js версии **16.x**.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Запуск проекта
 
-### Advanced Configuration
+1. Установите зависимости:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+   ```bash
+   npm install
+   ```
 
-### Deployment
+2. Запустите проект:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+   ```bash
+   npm start
+   ```
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+3. Откройте [http://localhost:3000](http://localhost:3000) для просмотра приложения.

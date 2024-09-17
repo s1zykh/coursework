@@ -194,7 +194,6 @@ class Graph {
     }
 
     DFS(start, [], visited);
-
     for (const path of paths) {
       let sumQuality = 0,
         sumDistance = 0;
@@ -205,7 +204,7 @@ class Graph {
       }
       newPaths.push({
         name: path,
-        quality: sumQuality,
+        quality: Math.floor(sumQuality / (path.length - 1)),
         distance: sumDistance,
       });
     }

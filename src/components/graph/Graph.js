@@ -50,6 +50,8 @@ const Graph = () => {
             y1={vertexes[nameVertex].coorY}
             x2={item.coorX}
             y2={item.coorY}
+            distance={item.weightDistance}
+            quality={item.weightQuality}
           />
         ))
       )}

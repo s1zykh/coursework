@@ -1,9 +1,0 @@
-.edge {
-  position: absolute;
-  background-color: black;
-  height: 2px; /* Высота линии */
-  transform-origin: left center; /* Указываем точку для поворота */
-  &__active {
-    cursor: pointer;
-  }
-}
